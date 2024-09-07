@@ -33,7 +33,7 @@ rule-providers:
   geolocation-!cn:
     type: http
     path: geolocation-!cn.yaml
-    url: "https://gh.con.sh/https://raw.githubusercontent.com/tiandao2/rules/main/geolocation-!cn.yaml"
+    url: "https://raw.githubusercontent.com/tiandao2/rules/main/geolocation-!cn.yaml"
     interval: 600
     proxy: "china"
     # proxy: "DIRECT"
@@ -42,7 +42,7 @@ rule-providers:
   telegram:
     type: http
     path: telegram.yaml
-    url: "https://gh.con.sh/https://raw.githubusercontent.com/tiandao2/rules/main/telegram.yaml"
+    url: "https://raw.githubusercontent.com/tiandao2/rules/main/telegram.yaml"
     interval: 600
     proxy: "china"
     # proxy: "DIRECT"
@@ -51,7 +51,7 @@ rule-providers:
   global-ip:
     type: http
     path: global-ip.yaml
-    url: "https://gh.con.sh/https://raw.githubusercontent.com/tiandao2/rules/main/global_ip.yaml"
+    url: "https://raw.githubusercontent.com/tiandao2/rules/main/global_ip.yaml"
     interval: 600
     proxy: "china"
     # proxy: "DIRECT"
