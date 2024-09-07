@@ -59,7 +59,7 @@ rule-providers:
     format: yaml
 
 rules:
-- DOMAIN-SUFFIX, 2024/9/8/02:15:10, DIRECT, no-resolve
+- DOMAIN-SUFFIX, 2024/9/8/02:17:10, DIRECT, no-resolve
 - GEOIP, LAN, DIRECT
 - GEOSITE, CN, china
 - GEOIP, CN, china
