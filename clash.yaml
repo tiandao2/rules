@@ -29,14 +29,3 @@ dns:
     ipcidr:
       - 240.0.0.0/4
 
-sniffer:
-  enable: true
-  parse-pure-ip: true
-tun:
-  enable: true
-  stack: system
-  device: utun
-  auto-route: true
-  auto-detect-interface: true
-  dns-hijack:
-    - tcp://any:53
