@@ -1,0 +1,56 @@
+rule-providers:
+  geolocation-!cn:
+    type: http
+    path: geolocation-!cn.yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/geolocation-!cn.yaml"
+    interval: 600
+    proxy: "china"
+    # proxy: "DIRECT"
+    behavior: "domain"
+    format: yaml
+  telegram:
+    type: http
+    path: telegram.yaml
+    url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.yaml"
+    interval: 600
+    proxy: "china"
+    # proxy: "DIRECT"
+    behavior: "domain"
+    format: yaml
+  global-ip:
+    type: http
+    path: global-ip.yaml
+    url: "https://yifan:jkZLlbz6ly53QK0E@47.76.231.12/yifan/global_ip.yaml"
+    interval: 600
+    proxy: "china"
+    # proxy: "DIRECT"
+    behavior: "ipcidr"
+    format: yaml
+
+rules:
+- DOMAIN-SUFFIX, 2024年9月3日20:23:13, DIRECT, no-resolve
+- GEOIP, LAN, DIRECT
+- GEOSITE, CN, china
+- GEOIP, CN, china
+- RULE-SET, geolocation-!cn, DIRECT, no-resolve
+- RULE-SET, telegram, DIRECT, no-resolve
+- RULE-SET, global-ip, DIRECT, no-resolve
+# - DOMAIN-SUFFIX, vqhmhfreurvc.com, china, no-resolve  
+# - DOMAIN-SUFFIX, iplark.com, china, no-resolve 
+# - DOMAIN-SUFFIX, ipinfo.io, china, no-resolve
+- DOMAIN-SUFFIX, ping0.cc, china
+- MATCH, china
+
+
+sniffer:
+  enable: true
+  parse-pure-ip: true
+tun:
+  enable: true
+  stack: system
+  device: utun
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+  - tcp://any:53
+
