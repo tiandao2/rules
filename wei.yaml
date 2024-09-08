@@ -29,6 +29,7 @@ rule-providers:
 
 rules:
 - DOMAIN-SUFFIX, 2024年9月3日20:23:13, DIRECT, no-resolve
+- DOMAIN-SUFFIX, googleapis.com, DIRECT
 - GEOIP, LAN, DIRECT
 - GEOSITE, CN, china
 - GEOIP, CN, china
