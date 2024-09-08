@@ -31,6 +31,7 @@ dns:
 
       
 rules:
+- DOMAIN-SUFFIX, todesk.com, DIRECT
 - DOMAIN-SUFFIX, googleapis.com, DIRECT
 - GEOIP, LAN, DIRECT
 - GEOSITE, CN, china
