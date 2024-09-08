@@ -40,7 +40,6 @@ rules:
 # - DOMAIN-SUFFIX, iplark.com, china, no-resolve 
 # - DOMAIN-SUFFIX, ipinfo.io, china, no-resolve
 - DOMAIN-SUFFIX, ping0.cc, china
-- MATCH, china
 
 sniffer:
   enable: true
