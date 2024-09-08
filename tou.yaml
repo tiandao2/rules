@@ -31,7 +31,7 @@ dns:
 
       
 rules:
-- DOMAIN-SUFFIX, 2024/9/8/12:22:14, DIRECT, no-resolve
+- DOMAIN-SUFFIX, 2024/9/8/12:36:14, DIRECT, no-resolve
 - DOMAIN-SUFFIX, googleapis.com, DIRECT
 - GEOIP, LAN, DIRECT
 - GEOSITE, CN, china
