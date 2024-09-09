@@ -42,15 +42,15 @@ rules:
 # - DOMAIN-SUFFIX, ipinfo.io, china, no-resolve
 
 
-sniffer:
-  enable: true
-  parse-pure-ip: true
-tun:
-  enable: true
-  stack: system
-  device: utun
-  auto-route: true
-  auto-detect-interface: true
-  dns-hijack:
-  - tcp://any:53
+#sniffer:
+#  enable: true
+#  parse-pure-ip: true
+#tun:
+#  enable: true
+#  stack: system
+#  device: utun
+#  auto-route: true
+#  auto-detect-interface: true
+#  dns-hijack:
+#  - tcp://any:53
 
