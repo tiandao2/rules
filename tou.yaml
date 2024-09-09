@@ -31,15 +31,16 @@ dns:
 
       
 rules:
-- DOMAIN-SUFFIX, todesk.com, DIRECT
+- DOMAIN-SUFFIX, ping0.cc, china
 - DOMAIN-SUFFIX, googleapis.com, DIRECT
+- DOMAIN-SUFFIX, todesk.com, DIRECT
 - GEOIP, LAN, DIRECT
 - GEOSITE, CN, china
 - GEOIP, CN, china
 # - DOMAIN-SUFFIX, vqhmhfreurvc.com, china, no-resolve  
 # - DOMAIN-SUFFIX, iplark.com, china, no-resolve 
 # - DOMAIN-SUFFIX, ipinfo.io, china, no-resolve
-- DOMAIN-SUFFIX, ping0.cc, china
+
 
 sniffer:
   enable: true
