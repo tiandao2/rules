@@ -1,0 +1,351 @@
+# 当回退（fallback）存在时，DNS服务器将同时向此部分的服务器和nameservers中的服务器发送并发请求。
+# 当GEOIP国家不是CN时，来自回退服务器的答案将被使用。
+# fallback:
+#   - tcp://1.1.1.1
+#   - 'tcp://1.1.1.1#en0'
+
+# 如果通过nameservers中的服务器解析的IP地址在下面指定的子网内，则这些地址被视为无效，
+# 并且将使用来自回退服务器的结果。
+#
+# 使用nameserver服务器解析的IP地址在fallback-filter.geoip为true的时候，并且
+# 当该IP地址的GEOIP为CN时将被使用。
+#
+# 如果fallback-filter.geoip为false，则如果没有匹配fallback-filter.ipcidr，
+# 始终使用nameserver的结果。
+#
+# 这是对DNS污染攻击的对策。
+# fallback-filter:
+#   geoip: true
+#   geoip-code: CN
+#   ipcidr:
+#     - 240.0.0.0/4
+#   domain:
+#     - '+.google.com'
+#     - '+.facebook.com'
+#     - '+.youtube.com'
+
+# 通过特定的nameservers查找域名
+# nameserver-policy:
+#   'www.baidu.com': '114.114.114.114'
+#   '+.internal.crop.com': '10.0.0.1'
+
+proxies:
+  # Shadowsocks
+  # 支持的加密方法（加密算法）：
+  #   aes-128-gcm aes-192-gcm aes-256-gcm
+  #   aes-128-cfb aes-192-cfb aes-256-cfb
+  #   aes-128-ctr aes-192-ctr aes-256-ctr
+  #   rc4-md5 chacha20-ietf xchacha20
+  #   chacha20-ietf-poly1305 xchacha20-ietf-poly1305
+  - name: "ss1"
+    type: ss
+    server: server
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "password"
+    # udp: true
+
+  - name: "ss2"
+    type: ss
+    server: server
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "password"
+    plugin: obfs
+    plugin-opts:
+      mode: tls # 或 http
+      # host: bing.com
+
+  - name: "ss3"
+    type: ss
+    server: server
+    port: 443
+    cipher: chacha20-ietf-poly1305
+    password: "password"
+    plugin: v2ray-plugin
+    plugin-opts:
+      mode: websocket # 目前没有QUIC支持
+      # tls: true # wss
+      # skip-cert-verify: true
+      # host: bing.com
+      # path: "/"
+      # mux: true
+      # headers:
+      #   custom: value
+
+  # vmess
+  # 加密支持 auto/aes-128-gcm/chacha20-poly1305/none
+  - name: "vmess"
+    type: vmess
+    server: server
+    port: 443
+    uuid: uuid
+    alterId: 32
+    cipher: auto
+    # udp: true
+    # tls: true
+    # skip-cert-verify: true
+    # servername: example.com # 优先于wss host
+    # network: ws
+    # ws-opts:
+    #   path: /path
+    #   headers:
+    #     Host: v2ray.com
+    #   max-early-data: 2048
+    #   early-data-header-name: Sec-WebSocket-Protocol
+
+  - name: "vmess-h2"
+    type: vmess
+    server: server
+    port: 443
+    uuid: uuid
+    alterId: 32
+    cipher: auto
+    network: h2
+    tls: true
+    h2-opts:
+      host:
+        - http.example.com
+        - http-alt.example.com
+      path: /
+
+  - name: "vmess-http"
+    type: vmess
+    server: server
+    port: 443
+    uuid: uuid
+    alterId: 32
+    cipher: auto
+    # udp: true
+    # network: http
+    # http-opts:
+    #   # method: "GET"
+    #   # path:
+    #   #   - '/'
+    #   #   - '/video'
+    #   # headers:
+    #   #   Connection:
+    #   #     - keep-alive
+
+  - name: vmess-grpc
+    server: server
+    port: 443
+    type: vmess
+    uuid: uuid
+    alterId: 32
+    cipher: auto
+    network: grpc
+    tls: true
+    servername: example.com
+    # skip-cert-verify: true
+    grpc-opts:
+      grpc-service-name: "example"
+
+  # socks5
+  - name: "socks"
+    type: socks5
+    server: server
+    port: 443
+    # username: username
+    # password: password
+    # tls: true
+    # skip-cert-verify: true
+    # udp: true
+
+  # http
+  - name: "http"
+    type: http
+    server: server
+    port: 443
+    # username: username
+    # password: password
+    # tls: true # https
+    # skip-cert-verify: true
+    # sni: custom.com
+
+  # Snell
+  # 注意，目前还不支持UDP
+  - name: "snell"
+    type: snell
+    server: server
+    port: 44046
+    psk: yourpsk
+    # version: 2
+    # obfs-opts:
+      # mode: http # 或 tls
+      # host: bing.com
+
+# Trojan
+  - name: "trojan"
+    type: trojan
+    server: server
+    port: 443
+    password: yourpsk
+    # udp: true
+    # sni: example.com # 也就是服务器名
+    # alpn:
+    #   - h2
+    #   - http/1.1
+    # skip-cert-verify: true
+
+  - name: trojan-grpc
+    server: server
+    port: 443
+    type: trojan
+    password: "example"
+    network: grpc
+    sni: example.com
+    # skip-cert-verify: true
+    udp: true
+    grpc-opts:
+      grpc-service-name: "example"
+
+  - name: trojan-ws
+    server: server
+    port: 443
+    type: trojan
+    password: "example"
+    network: ws
+    sni: example.com
+    # skip-cert-verify: true
+    udp: true
+    # ws-opts:
+      # path: /path
+      # headers:
+      #   Host: example.com
+
+  # ShadowsocksR
+  # 支持的加密方法 (cipher): 所有流加密算法在 ss 中
+  # 支持的混淆类型:
+  #   plain http_simple http_post
+  #   random_head tls1.2_ticket_auth tls1.2_ticket_fastauth
+  # 支持的协议:
+  #   origin auth_sha1_v4 auth_aes128_md5
+  #   auth_aes128_sha1 auth_chain_a auth_chain_b  
+  - name: "ssr"
+    type: ssr
+    server: server
+    port: 443
+    cipher: chacha20-ietf
+    password: "password"
+    obfs: tls1.2_ticket_auth
+    protocol: auth_sha1_v4
+    # obfs-param: domain.tld
+    # protocol-param: "#"
+    # udp: true
+
+proxy-groups:
+  # relay 链接代理。代理不可包含 relay。不支持 UDP。
+  # 流量: clash <-> http <-> vmess <-> ss1 <-> ss2 <-> 互联网
+  - name: "relay"
+    type: relay
+    proxies:
+      - http
+      - vmess
+      - ss1
+      - ss2
+
+  # url-test 通过基准测试确定使用哪个代理。
+  - name: "auto"
+    type: url-test
+    proxies:
+      - ss1
+      - ss2
+      - vmess1
+    # tolerance: 150
+    # lazy: true
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+
+  # fallback 通过优先级选择可用的策略。可用性通过访问 URL 测试，就像 auto url-test 组一样。
+  - name: "fallback-auto"
+    type: fallback
+    proxies:
+      - ss1
+      - ss2
+      - vmess1
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+
+  # load-balance: 同一个 eTLD+1 的请求将被发送到同一个代理。
+  - name: "load-balance"
+    type: load-balance
+    proxies:
+      - ss1
+      - ss2
+      - vmess1
+    url: 'http://www.gstatic.com/generate_204'
+    interval: 300
+    # strategy: consistent-hashing # 或 round-robin
+
+  # select 用于选择代理或代理组
+  # 推荐在图形界面中使用 RESTful API 切换代理。
+  - name: Proxy
+    type: select
+    # disable-udp: true
+    proxies:
+      - ss1
+      - ss2
+      - vmess1
+      - auto
+
+  # 直接到另一个接口名或 fwmark，也支持在代理上
+  - name: en1
+    type: select
+    interface-name: en1
+    routing-mark: 6667
+    proxies:
+      - DIRECT 
+
+  - name: UseProvider
+    type: select
+    use:
+      - provider1
+    proxies:
+      - Proxy
+      - DIRECT
+
+proxy-providers:
+  provider1:
+    type: http
+    url: "url"
+    interval: 3600
+    path: ./provider1.yaml
+    health-check:
+      enable: true
+      interval: 600
+      # lazy: true
+      url: http://www.gstatic.com/generate_204
+  test:
+    type: file
+    path: /test.yaml
+    health-check:
+      enable: true
+      interval: 36000
+      url: http://www.gstatic.com/generate_204
+	  
+tunnels:
+  # 一行配置
+  #- tcp/udp,127.0.0.1:6553,114.114.114.114:53,proxy
+  #- tcp,127.0.0.1:6666,rds.mysql.com:3306,vpn
+  # 完整的 YAML 配置
+  #- network: [tcp, udp]
+  #  address: 127.0.0.1:7777
+  #  target: target.com
+  #  proxy: proxy
+
+rules:
+  - DOMAIN-SUFFIX,google.com,auto
+  - DOMAIN-KEYWORD,google,auto
+  - DOMAIN,google.com,auto
+  - DOMAIN-SUFFIX,ad.com,REJECT
+  - SRC-IP-CIDR,192.168.1.201/32,DIRECT
+  # 可选参数 "no-resolve" 适用于 IP 规则 (GEOIP, IP-CIDR, IP-CIDR6)
+  - IP-CIDR,127.0.0.0/8,DIRECT
+  - GEOIP,CN,DIRECT
+  - DST-PORT,80,DIRECT
+  - SRC-PORT,7777,DIRECT
+  - RULE-SET,apple,REJECT # 仅限高级版
+  - MATCH,auto
+
+
