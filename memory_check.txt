@@ -1,0 +1,70 @@
+#!/bin/bash
+
+ITEMS=(
+"/etc/systemd/system/sing-box-memory-check.service"
+"/etc/systemd/system/sing-box-memory-check.timer"
+"/usr/local/s-ui/bin/memory_check.sh"
+)
+
+
+if [ -f "/usr/local/s-ui/bin/memory_check.sh" ]; then
+    echo "已经安装, 更新升级ing..."
+    # exit 1
+fi
+
+apt install bc -y
+
+cat >/usr/local/s-ui/bin/memory_check.sh<<'EOF'
+#!/bin/bash
+
+# 设置内存阈值（百分比）
+THRESHOLD=90
+
+# 获取 sing-box 服务的内存使用率
+# MEMORY_USAGE=$(ps -C sing-box -o %mem= | awk '{sum+=$1} END {print sum}')
+MEMORY_USAGE=$(free | awk '/^Mem:/ { print $3/$2 * 100.0 } ')
+
+# 检查内存使用情况是否超过阈值
+if (( $(echo "$MEMORY_USAGE > $THRESHOLD" | bc -l) )); then
+    echo "Memory usage is above $THRESHOLD%. value: ${MEMORY_USAGE}, Restarting sing-box service..."
+    systemctl restart sing-box
+else
+    echo "Memory usage is within limits. value: ${MEMORY_USAGE}"
+fi
+EOF
+
+chmod +x /usr/local/s-ui/bin/memory_check.sh
+
+cat>/etc/systemd/system/sing-box-memory-check.service<<EOF
+[Unit]
+Description=Memory check for sing-box service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/s-ui/bin/memory_check.sh
+
+EOF
+
+cat>/etc/systemd/system/sing-box-memory-check.timer<<EOF
+[Unit]
+Description=Run sing-box memory check every 10 second
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=30s
+Unit=sing-box-memory-check.service
+
+[Install]
+WantedBy=timers.target
+
+EOF
+
+
+systemctl daemon-reload
+systemctl enable sing-box-memory-check.timer
+systemctl stop sing-box-memory-check.timer
+systemctl start sing-box-memory-check.timer
+
+# 只保留 2 天日志
+journalctl --vacuum-time=1h
+
